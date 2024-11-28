@@ -1,9 +1,17 @@
-"use server";
+"use server"
 
-import { redirect } from "next/navigation";
+import { loginSchema } from "@/lib/zodSchemas"
+import { parseWithZod } from "@conform-to/zod"
+import { redirect } from "next/navigation"
 
-export async function CreateUser() {
-  //some auth stuff
+export async function CreateUser(prevState: unknown, formData: FormData) {
+  const submission = parseWithZod(formData, {
+    schema: loginSchema
+  })
 
-  return redirect("/success");
+  if (submission.status !== "success") {
+    return submission.reply()
+  }
+
+  return redirect("/success")
 }
